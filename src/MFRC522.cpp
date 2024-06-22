@@ -386,16 +386,19 @@ bool MFRC522::PCD_PerformSelfTest() {
 		case 0x92:	// Version 2.0
 			reference = MFRC522_firmware_referenceV2_0;
 			break;
-		default:	// Unknown version
-			return false; // abort test
-	}
-	
-	// Verify that the results match up to our expectations
-	for (uint8_t i = 0; i < 64; i++) {
-		if (result[i] != pgm_read_byte(&(reference[i]))) {
-			return false;
-		}
-	}
+        case 0xB2: // Unknown Chinese clone
+            reference = MFRC522_firmware_reference_chinese_clone;
+            break;
+        default:    // Unknown version
+            return false; // abort test
+    }
+
+    // Verify that the results match up to our expectations
+    for (uint8_t i = 0; i < 64; i++) {
+        if (result[i] != pgm_read_byte(&(reference[i]))) {
+            return false;
+        }
+    }
 	
 	// 8. Perform a re-init, because PCD does not work after test.
 	// Reset does not work as expected.
